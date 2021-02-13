@@ -3,7 +3,7 @@ import joi from '@hapi/joi';
 import { UserInputError } from 'apollo-server-express';
 import UserModel from '../models/User';
 import { UserPure } from '../types/user';
-import { generateToken } from '../utils/token';
+import { generateToken } from '../middleware/auth';
 import config from '../config/env';
 
 const userSchema = joi.object().keys({

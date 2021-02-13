@@ -1,5 +1,5 @@
-import { user } from '../controllers';
-import { UserPure } from '../types/user';
+import { user } from '../../controllers';
+import { UserPure } from '../../types/user';
 
 export default {
   Query: {

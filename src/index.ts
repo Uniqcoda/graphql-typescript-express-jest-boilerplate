@@ -1,8 +1,10 @@
 import express from 'express';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import mongoose from 'mongoose';
-import resolvers from './resolvers/index';
-import typeDefs from './typeDefs';
+// import logger from 'morgan';
+// import helmet from 'helmet';
+import resolvers from './graphql/resolvers/index';
+import typeDefs from './graphql/typeDefs/user';
 import config from './config/env';
 
 const MONGODB = config.MONGODB;
@@ -15,6 +17,33 @@ export const schema = makeExecutableSchema({
 });
 
 const app = express();
+// // Setup Request logger
+// const logFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'development';
+
+// app.use(
+//   logger(logFormat, {
+//     skip: function (_req, res) {
+//       if (process.env.NODE_ENV === 'test') {
+//         return true;
+//       }
+
+//       return res.statusCode < 400;
+//     },
+//     stream: process.stderr,
+//   }),
+// );
+
+// app.use(
+//   logger(logFormat, {
+//     skip: function (_req, res) {
+//       return res.statusCode >= 400;
+//     },
+//     stream: process.stdout,
+//   }),
+// );
+
+// app.use(helmet());
+
 const startServer = async () => {
   const server = new ApolloServer({
     schema,
