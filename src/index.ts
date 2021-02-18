@@ -2,7 +2,8 @@ import express from 'express';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import mongoose from 'mongoose';
 // import logger from 'morgan';
-// import helmet from 'helmet';
+import helmet from 'helmet';
+import cors from 'cors';
 import resolvers from './graphql/resolvers/index';
 import typeDefs from './graphql/typeDefs/user';
 import config from './config/env';
@@ -17,6 +18,7 @@ export const schema = makeExecutableSchema({
 });
 
 const app = express();
+// TODO: check this logger
 // // Setup Request logger
 // const logFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'development';
 
@@ -42,7 +44,8 @@ const app = express();
 //   }),
 // );
 
-// app.use(helmet());
+app.use(helmet());
+app.use(cors());
 
 const startServer = async () => {
   const server = new ApolloServer({

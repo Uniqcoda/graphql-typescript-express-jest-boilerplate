@@ -1,5 +1,4 @@
 import { graphqlTestCall, teardown } from '../test-setup';
-import bcrypt from 'bcryptjs';
 import UserModel from '../models/User';
 
 beforeAll(async () => {
@@ -8,18 +7,11 @@ beforeAll(async () => {
     firstname: 'Ada',
     lastname: 'Okoro',
     email: 'ada@mail.com',
-    role: 'Admin',
     password: 'ada',
-    phonePrefix: '234',
-    phone: '8067579306',
-    gender: 'Female',
+    phone: '0806759315',
   };
 
-  const passwordHash = await bcrypt.hash(user.password, 12);
-  const testUser = new UserModel({
-    ...user,
-    password: passwordHash,
-  });
+  const testUser = new UserModel(user);
   await testUser.save();
 });
 
@@ -38,12 +30,12 @@ mutation SignUpMutation(
     firstname
     lastname
     email
-    role
-    dob
-    gender
-    phonePrefix
     phone
+    isVerified
     createdAt
+    updatedAt
+    DOB
+    token
   }
 }
 `;
@@ -51,7 +43,6 @@ mutation SignUpMutation(
 const loginMutation = `
 mutation LoginMutation($email: String!, $password: String!) {
   login(email: $email, password: $password) {
-    email,
     token
   }
 }
@@ -64,12 +55,12 @@ const getUsersQuery = `
       firstname
       lastname
       email
-      role
-      dob
-      gender
-      phonePrefix
       phone
+      isVerified
       createdAt
+      updatedAt
+      DOB
+      token
     }
   }
 `;
@@ -85,11 +76,8 @@ describe('User resolvers', () => {
       firstname: 'Ade',
       lastname: 'Baba',
       email: 'ade@mail.com',
-      role: 'User',
       password: 'ade',
-      phonePrefix: '234',
       phone: '8067579313',
-      gender: 'Female',
     };
     const response = await graphqlTestCall(signUpMutation, { input: newUser });
 
@@ -99,11 +87,10 @@ describe('User resolvers', () => {
           firstname: 'Ade',
           lastname: 'Baba',
           email: 'ade@mail.com',
-          role: 'User',
-          gender: 'Female',
         },
       },
     });
+    expect(response.data!.signUp).toHaveProperty('token');
   });
 
   test('test unsuccessful sign up with already existing email', async () => {
@@ -111,16 +98,13 @@ describe('User resolvers', () => {
       firstname: 'Ade',
       lastname: 'Baba',
       email: 'ada@mail.com',
-      role: 'User',
       password: 'ade',
-      phonePrefix: '234',
       phone: '8067579313',
-      gender: 'Female',
     };
     const response = await graphqlTestCall(signUpMutation, { input: newUser });
 
     const errors: any = response.errors;
-    expect(errors[0].message).toBe('Email already in use');
+    expect(errors[0].message).toContain('Email already in use');
   });
 
   test('test successful login', async () => {

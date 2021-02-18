@@ -1,10 +1,11 @@
 import { model, Schema } from 'mongoose';
 import { UserInterface } from '../types/user';
+import bcrypt, { hash } from 'bcryptjs';
 
 const userSchema = new Schema(
   {
-    firstname: { type: String, trim: true },
-    lastname: { type: String, trim: true },
+    firstname: { type: String, required: true, trim: true },
+    lastname: { type: String, required: true, trim: true },
     email: {
       type: String,
       lowercase: true,
@@ -13,24 +14,62 @@ const userSchema = new Schema(
       required: true,
     },
     password: { type: String, required: true },
-    phonePrefix: { type: String },
     phone: { type: String },
-    gender: {
-      type: String,
-      enum: ['Female', 'Male'],
-    },
-    dob: { type: Date },
-    role: {
-      type: String,
-      enum: ['SuperAdmin', 'Admin', 'User'],
-      default: 'User',
-      required: true,
-    },
-    avatarURL: { type: String, default: '' },
+    DOB: { type: Date },
     isVerified: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    isGuest: { type: Boolean, default: false },
+    isSocial: { type: Boolean, default: false },
+    domain: { type: String },
     deletedAt: { type: Date },
   },
   { timestamps: true },
 );
+
+userSchema.pre<UserInterface>('save', async function () {
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await hash(this.password.toString(), salt);
+  }
+});
+
+userSchema.methods = {
+  transform() {
+    const {
+      id,
+      email,
+      lastname,
+      firstname,
+      DOB,
+      phone,
+      isDeleted,
+      isActive,
+      isVerified,
+      isGuest,
+      isSocial,
+      domain,
+      createdAt,
+      updatedAt,
+    } = this;
+
+    return {
+      id,
+      email,
+      firstname,
+      lastname,
+      DOB,
+      phone,
+      isDeleted,
+      isActive,
+      isVerified,
+      isGuest,
+      isSocial,
+      domain,
+      createdAt,
+      updatedAt,
+    };
+  },
+};
 
 export default model<UserInterface>('User', userSchema);
