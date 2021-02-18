@@ -1,5 +1,5 @@
-import { user } from '../controllers';
-import { UserPure } from '../types/user';
+import { user } from '../../controllers';
+import { UserPure } from '../../types/user';
 
 export default {
   Query: {
@@ -11,26 +11,13 @@ export default {
 
   Mutation: {
     signUp: async (_: Request, { input }: { input: UserPure }) => {
-      const {
-        firstname,
-        lastname,
-        email,
-        gender,
-        dob,
-        password,
-        role,
-        phonePrefix,
-        phone,
-      } = input;
+      const { firstname, lastname, email, DOB, password, phone } = input;
       const response = await user.create({
         firstname,
         lastname,
         email,
-        gender,
-        dob,
+        DOB,
         password,
-        role,
-        phonePrefix,
         phone,
       });
 

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AuthenticationError } from 'apollo-server-express';
+// import { AuthenticationError } from 'apollo-server-express';
 import config from '../config/env';
 import { UserPure } from '../types/user';
 import { Request } from 'express';
@@ -8,12 +8,11 @@ import UserModel from '../models/User';
 const jwtSecret = config.jwtSecret;
 const jwtExpiresIn = config.jwtExpiresIn;
 
-export const generateToken = (user: UserPure, secret: string) => {
+export const generateToken = (user: Partial<UserPure>, secret: string) => {
   return jwt.sign(
     {
-      id: user.id,
+      id: user._id,
       email: user.email,
-      role: user.role,
     },
     secret,
     { expiresIn: jwtExpiresIn },
@@ -25,7 +24,7 @@ export const verifyToken = (token: string, secret: string) => {
     const tokenDetails = <UserPure>jwt.verify(token, secret);
     return tokenDetails;
   } catch (error) {
-    throw new AuthenticationError('Invalid/Expired token');
+    throw new Error('Invalid/Expired token');
   }
 };
 
@@ -39,18 +38,16 @@ export const checkAuth = async (req: Request) => {
     if (token) {
       try {
         const user = <UserPure>jwt.verify(token, jwtSecret);
-        const userExists = await UserModel.findById(user.id);
+        const userExists = await UserModel.findById(user._id);
         if (userExists && userExists.deletedAt) {
           throw new Error('User account does not exist');
         }
         return user;
       } catch (error) {
-        throw new AuthenticationError('Invalid/Expired token');
+        throw new Error('Invalid/Expired token');
       }
     }
-    throw new AuthenticationError(
-      "Authorization token must be 'Bearer [token]'",
-    );
+    throw new Error("Authorization token must be 'Bearer [token]'");
   }
-  throw new AuthenticationError('Authorization header must be provided');
+  throw new Error('Authorization header must be provided');
 };

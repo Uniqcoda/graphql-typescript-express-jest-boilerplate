@@ -10,38 +10,30 @@ export default gql`
     User
   }
 
-  enum Gender {
-    Female
-    Male
-  }
-
   type User {
     id: ID
     firstname: String
     lastname: String
     email: String
-    role: Role
-    dob: Date
-    gender: Gender
-    phonePrefix: String
+    DOB: Date
     phone: String
     createdAt: Date
     updatedAt: Date
     deletedAt: Date
-    avatarURL: String
-    token: String
     isVerified: Boolean
+    token: String
+  }
+
+  type Token {
+    token: String
   }
 
   input SignUp {
     firstname: String!
     lastname: String!
     email: String!
-    role: Role!
     password: String!
-    dob: Date
-    gender: Gender
-    phonePrefix: String!
+    DOB: Date
     phone: String!
   }
 
@@ -52,6 +44,6 @@ export default gql`
   type Mutation {
     # user mutations
     signUp(input: SignUp!): User!
-    login(email: String!, password: String!): User!
+    login(email: String!, password: String!): Token!
   }
 `;

@@ -1,34 +1,45 @@
 import { Document } from 'mongoose';
 
 export interface UserInterface extends Document {
-  id: string;
+  _id: string;
   firstname: string;
   lastname: string;
   email: string;
-  gender: string;
-  dob: string;
-  phonePrefix: number;
-  phone: number;
-  role: string;
+  DOB: string;
+  phone: string;
   password: string;
   createdAt: string;
-  avatarURL: string;
   updatedAt: string;
   deletedAt: string;
   isActive: boolean;
+  isVerified: boolean;
+  isGuest: boolean;
+  transform: Function;
+  isSocial: boolean;
+  domain: string;
 }
 
 export interface UserPure {
-  id?: string;
+  _id?: string;
   firstname: string;
   lastname: string;
   email: string;
-  gender?: string;
-  dob?: string;
-  phonePrefix: number;
-  phone: number;
-  role: string;
+  DOB?: string;
+  phone: string;
   password: string;
   createdAt?: string;
   token?: string;
+  isActive?: boolean;
+}
+
+export interface LoginInterface {
+  email: String;
+  password: string;
+}
+
+export interface SocialLoginInterface {
+  firstname: string;
+  lastname: string;
+  email: string;
+  isActive: boolean;
 }

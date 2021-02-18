@@ -6,13 +6,13 @@ const envVars = JSON.parse(JSON.stringify(process.env));
 export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
-  jwtSecret: envVars.JWT_SECRET,
+  jwtSecret: envVars.JWT_TOKEN_SECRET,
   jwtExpiresIn: envVars.JWT_EXPIRES_IN,
   MONGODB:
     envVars.NODE_ENV === 'test'
-      ? envVars.MONGODB_TEST
+      ? envVars.MONGO_URI_TEST
       : envVars.NODE_ENV === 'development'
-      ? envVars.MONGODB_LOCAL
+      ? envVars.MONGO_URI
       : envVars.MONGODB_URI,
   serverUrl:
     envVars.NODE_ENV === 'production'
@@ -21,5 +21,8 @@ export default {
   frontEndUrl:
     envVars.NODE_ENV === 'production'
       ? envVars.FRONT_END_URL_PROD
-      : envVars.FRONT_END_URL_DEV,
+      : envVars.CLIENT_SIDE_URL,
+  senderMail: envVars.SENDER_MAIL,
+  welcomeMailTemplate: envVars.WELCOME_MAIL_TEMPLATE_ID,
+  sendGridApiKey: envVars.SENDGRID_API_KEY,
 };
