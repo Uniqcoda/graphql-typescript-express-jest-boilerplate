@@ -1,9 +1,6 @@
 import express from 'express';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import mongoose from 'mongoose';
-// import logger from 'morgan';
-import helmet from 'helmet';
-import cors from 'cors';
 import resolvers from './graphql/resolvers/index';
 import typeDefs from './graphql/typeDefs/user';
 import config from './config/env';
@@ -18,34 +15,6 @@ export const schema = makeExecutableSchema({
 });
 
 const app = express();
-// TODO: check this logger
-// // Setup Request logger
-// const logFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'development';
-
-// app.use(
-//   logger(logFormat, {
-//     skip: function (_req, res) {
-//       if (process.env.NODE_ENV === 'test') {
-//         return true;
-//       }
-
-//       return res.statusCode < 400;
-//     },
-//     stream: process.stderr,
-//   }),
-// );
-
-// app.use(
-//   logger(logFormat, {
-//     skip: function (_req, res) {
-//       return res.statusCode >= 400;
-//     },
-//     stream: process.stdout,
-//   }),
-// );
-
-app.use(helmet());
-app.use(cors());
 
 const startServer = async () => {
   const server = new ApolloServer({
